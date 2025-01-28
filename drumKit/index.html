@@ -1,52 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DrumKit</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background: url(./assets/img/drum-background.jpg);
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        kbd {
+            display: block;
+            font-size: 40px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .box {
+            border: 4px solid black;
+            border-radius: 5px;
+            padding: 15px;
+            transition: all .07s;
+            text-align: center;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            }
+        }
+
+        .sound {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffc600;
+        }
+
+        .playing {
+            transform: scale(1.6);
+            border-color: #ffc600;
+            box-shadow: 0 0 10px #ffc600;
+        }
     </style>
-    <script src="./javaScript.js"></script>
 </head>
+
 <body>
-    <div class="keys">
-        <div data-key="65" class="key">
-            <span>A</span>
-            <h2>CLAP</h2>
+    <div class="container">
+        <div data-key="65" class="box">
+            <kbd>A</kbd>
+            <span class="sound">CLAP</span>
         </div>
-        <div data-key="83" class="key">
-            <span>S</span>
-            <h2>HIHAT</h2>
+        <div data-key="83" class="box">
+            <kbd>S</kbd>
+            <span class="sound">HIHAT</span>
         </div>
-        <div data-key="68" class="key">
-            <span>D</span>
-            <h2>KICK</h2>
+        <div data-key="68" class="box">
+            <kbd>D</kbd>
+            <span class="sound">KICK</span>
         </div>
-        <div data-key="70" class="key">
-            <span>F</span>
-            <h2>OPENHAT</h2>
+        <div data-key="70" class="box">
+            <kbd>F</kbd>
+            <span class="sound">OPENHAT</span>
         </div>
-        <div data-key="71" class="key">
-            <span>G</span>
-            <h2>BOOM</h2>
+        <div data-key="71" class="box">
+            <kbd>G</kbd>
+            <span class="sound">BOOM</span>
         </div>
-        <div data-key="72" class="key">
-            <span>H</span>
-            <h2>RIDE</h2>
+        <div data-key="72" class="box">
+            <kbd>H</kbd>
+            <span class="sound">RIDE</span>
         </div>
-        <div data-key="74" class="key">
-            <span>J</span>
-            <h2>SHARE</h2>
+        <div data-key="74" class="box">
+            <kbd>J</kbd>
+            <span class="sound">SNARE</span>
         </div>
-        <div data-key="75" class="key">
-            <span>K</span>
-            <h2>TOM</h2>
+        <div data-key="75" class="box">
+            <kbd>K</kbd>
+            <span class="sound">TOM</span>
         </div>
-        <div data-key="76" class="key">
-            <span>L</span>
-            <h2>TINK</h2>
+        <div data-key="76" class="box">
+            <kbd>L</kbd>
+            <span class="sound">TINK</span>
         </div>
     </div>
+
+    <audio data-key="65" src="./assets/auidio/clap.mp3"></audio>
+    <audio data-key="83" src="./assets/auidio/hihat.mp3"></audio>
+    <audio data-key="68" src="./assets/auidio/kick.mp3"></audio>
+    <audio data-key="76" src="./assets/auidio/openhat.mp3"></audio>
+    <audio data-key="70" src="./assets/auidio/boom.mp3"></audio>
+    <audio data-key="71" src="./assets/auidio/ride.mp3"></audio>
+    <audio data-key="72" src="./assets/auidio/snare.mp3"></audio>
+    <audio data-key="74" src="./assets/auidio/tom.mp3"></audio>
+    <audio data-key="75" src="./assets/auidio/tink.mp3"></audio>
+
+    <script>
+        function playSound(e) {
+            const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+            const key = document.querySelector(`.box[data-key="${e.keyCode}"]`);
+
+            if (!audio) return; //detiene la ejecucion de la funcion
+            audio.currentTime = 0; //retrocede al inicio 
+            audio.play();
+            key.classList.add('playing');
+        }
+
+        function removeTransition(e) {
+            if (e.propertyName !== 'transform') {
+                this.classList.remove('playing');
+            }
+        }
+        const keys = document.querySelectorAll('.box');
+        keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+        
+        window.addEventListener('keydown', playSound);
+    </script>
 </body>
+
 </html>
